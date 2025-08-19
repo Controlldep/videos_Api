@@ -77,7 +77,7 @@ export const setupApp = (app: Express) => {
         };
 
         videos.push(createVideo);
-        res.sendStatus(201).json(createVideo);
+        res.status(201).send(createVideo);
     });
 
     app.get('/videos/:id' , (req: Request  , res: Response) => {
@@ -139,7 +139,7 @@ export const setupApp = (app: Express) => {
             publicationDate: publicationDate || addDays(new Date(video.createdAt), 1).toISOString()
         });
 
-        return res.status(204).send();
+        res.status(204).send();
     });
 
 
@@ -147,10 +147,10 @@ export const setupApp = (app: Express) => {
         const id = Number(req.params.id);
         const video = videos.findIndex(v => v.id === id);
         if (video === -1) {
-            return res.status(404).send();
+            res.status(404).send();
         }else {
             videos.splice(video , 1);
-            return  res.status(204).send()
+            res.status(204).send()
         }
     })
 
