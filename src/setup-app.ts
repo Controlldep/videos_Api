@@ -38,26 +38,32 @@ export const setupApp = (app: Express) => {
     app.post('/videos', (req: Request, res: Response) => {
         const { title, author, availableResolutions } = req.body;
 
-        if (!title || title.length > 40) {
-            return res.status(400).json({
-                errorsMessages: [{ message: "Invalid input", field: "title" }]
-            });
+        const errorsMessages: { message: string; field: string }[] = [];
+
+        if (!title || typeof title !== 'string' || title.length > 40) {
+            errorsMessages.push({ message: 'Invalid input', field: 'title' });
         }
 
-        if (!author || author.length > 20) {
-            return res.status(400).json({
-                errorsMessages: [{ message: "Invalid input", field: "author" }]
-            });
+        if (!author || typeof author !== 'string' || author.length > 20) {
+            errorsMessages.push({ message: 'Invalid input', field: 'author' });
         }
 
-        const resolutionsArray = Array.isArray(availableResolutions) ? availableResolutions : [];
-        const isValid = resolutionsArray.every(r => Object.values(Resolution).includes(r));
-        if (!isValid) {
-            return res.status(400).json({
-                errorsMessages: [{ message: "Invalid input", field: "availableResolutions" }]
-            });
+        if (
+            availableResolutions !== undefined &&
+            (!Array.isArray(availableResolutions) ||
+                !availableResolutions.every(r => Object.values(Resolution).includes(r)))
+        ) {
+            errorsMessages.push({ message: 'Invalid input', field: 'availableResolutions' });
         }
 
+
+        if (errorsMessages.length > 0) {
+            return res.status(400).json({ errorsMessages });
+        }
+
+
+        const createdAt = new Date().toISOString();
+        const publicationDate = new Date(new Date(createdAt).getTime() + 24 * 60 * 60 * 1000).toISOString();
 
         const createVideo = {
             id: +Date.now(),
@@ -65,9 +71,9 @@ export const setupApp = (app: Express) => {
             author,
             canBeDownloaded: false,
             minAgeRestriction: null,
-            createdAt: new Date().toISOString(),
-            publicationDate: new Date(new Date().getTime() + 24*60*60*1000).toISOString(), // на день позже createdAt
-            availableResolutions: resolutionsArray
+            createdAt,
+            publicationDate,
+            availableResolutions: availableResolutions || []
         };
 
         videos.push(createVideo);
