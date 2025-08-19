@@ -31,11 +31,11 @@ export const setupApp = (app: Express) => {
         res.send("Hello from Render!");
     });
 
-    app.get('/api/videos', (req: Request  , res: Response ) => {
+    app.get('/videos', (req: Request  , res: Response ) => {
         res.status(200).json(videos)
     })
 
-    app.post('/api/videos',(req: Request  , res: Response) => {
+    app.post('/videos',(req: Request  , res: Response) => {
         const {title , author , availableResolutions} = req.body
         const isValid = Array.isArray(availableResolutions) &&
             availableResolutions.every(r => Object.values(Resolution).includes(r));
@@ -60,7 +60,7 @@ export const setupApp = (app: Express) => {
         res.status(201).json(createVideo)
     })
 
-    app.get('/api/videos/:id' , (req: Request  , res: Response) => {
+    app.get('/videos/:id' , (req: Request  , res: Response) => {
         const id = Number(req.params.id)
         const findVideos = videos.find(value => value.id === id)
         if(findVideos) {
@@ -70,7 +70,7 @@ export const setupApp = (app: Express) => {
         }
     })
 
-    app.put('/api/videos/:id', (req: Request  , res: Response) => {
+    app.put('/videos/:id', (req: Request  , res: Response) => {
         const id = Number(req.params.id);
         const video = videos.find(v => v.id === id);
         if (!video) return res.status(404);
@@ -95,7 +95,7 @@ export const setupApp = (app: Express) => {
         return res.status(204);
     });
 
-    app.delete('/api/videos/:id' , (req: Request  , res: Response) => {
+    app.delete('/videos/:id' , (req: Request  , res: Response) => {
         const id = Number(req.params.id);
         const video = videos.findIndex(v => v.id === id);
         if (video === -1) {
@@ -106,7 +106,7 @@ export const setupApp = (app: Express) => {
         }
     })
 
-    app.delete('/api/testing/all-data' , (req: Request  , res: Response) => {
+    app.delete('/testing/all-data' , (req: Request  , res: Response) => {
         videos = [];
         res.status(204)
     })
