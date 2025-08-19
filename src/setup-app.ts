@@ -106,6 +106,5 @@ export const setupApp = (app: Express) => {
         videos = [];
         res.status(204)
     })
-
     return app;
 };
