@@ -32,7 +32,7 @@ export const setupApp = (app: Express) => {
     });
 
     app.get('/videos', (req: Request  , res: Response ) => {
-        res.status(200).json(videos)
+        res.sendStatus(200).json(videos)
     })
 
     app.post('/videos',(req: Request  , res: Response) => {
@@ -57,23 +57,23 @@ export const setupApp = (app: Express) => {
             availableResolutions
         }
         videos.push(createVideo)
-        res.status(201).json(createVideo)
+        res.sendStatus(201).json(createVideo)
     })
 
     app.get('/videos/:id' , (req: Request  , res: Response) => {
         const id = Number(req.params.id)
         const findVideos = videos.find(value => value.id === id)
         if(findVideos) {
-            return res.status(200).json(findVideos)
+            return res.sendStatus(200).json(findVideos)
         }else {
-            return res.status(404)
+            return res.sendStatus(404)
         }
     })
 
     app.put('/videos/:id', (req: Request  , res: Response) => {
         const id = Number(req.params.id);
         const video = videos.find(v => v.id === id);
-        if (!video) return res.status(404);
+        if (!video) return res.sendStatus(404);
 
         const { title, author, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate } = req.body;
 
@@ -92,23 +92,23 @@ export const setupApp = (app: Express) => {
 
         Object.assign(video, { title, author, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate });
 
-        return res.status(204);
+        return res.sendStatus(204);
     });
 
     app.delete('/videos/:id' , (req: Request  , res: Response) => {
         const id = Number(req.params.id);
         const video = videos.findIndex(v => v.id === id);
         if (video === -1) {
-            return res.status(404);
+            return res.sendStatus(404);
         }else {
             videos.splice(video , 1);
-            return  res.status(204)
+            return  res.sendStatus(204)
         }
     })
 
     app.delete('/testing/all-data' , (req: Request  , res: Response) => {
         videos = [];
-        res.status(204)
+        res.sendStatus(204)
     })
     return app;
 };
