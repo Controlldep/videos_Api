@@ -32,7 +32,7 @@ export const setupApp = (app: Express) => {
     });
 
     app.get('/videos', (req: Request  , res: Response ) => {
-        res.sendStatus(200).json(videos)
+        res.sendStatus(200)
     })
 
     app.post('/videos', (req: Request, res: Response) => {
