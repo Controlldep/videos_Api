@@ -93,48 +93,58 @@ export const setupApp = (app: Express) => {
         }
     })
 
+    function addDays(date: Date, days: number): Date {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
     app.put('/videos/:id', (req: Request, res: Response) => {
         const id = Number(req.params.id);
         const video = videos.find(v => v.id === id);
         if (!video) return res.sendStatus(404);
 
-        const { title, author, availableResolutions, canBeDownloaded, minAgeRestriction, publicationDate } = req.body;
+        const {
+            title,
+            author,
+            availableResolutions,
+            canBeDownloaded,
+            minAgeRestriction,
+            publicationDate
+        } = req.body;
 
-        const errors: { message: string; field: string }[] = [];
+        const isResolutionsValid =
+            Array.isArray(availableResolutions) &&
+            availableResolutions.every(r => Object.values(Resolution).includes(r as Resolution));
 
-        if (!title || typeof title !== 'string' || title.length > 40) {
-            errors.push({ message: "Invalid input", field: "title" });
-        }
-        if (!author || typeof author !== 'string' || author.length > 20) {
-            errors.push({ message: "Invalid input", field: "author" });
-        }
-        if (availableResolutions !== undefined) {
-            const isResValid = Array.isArray(availableResolutions) &&
-                availableResolutions.every(r => Object.values(Resolution).includes(r as Resolution));
-            if (!isResValid) errors.push({ message: "Invalid input", field: "availableResolutions" });
-        }
-
-        if (canBeDownloaded !== undefined && typeof canBeDownloaded !== 'boolean') {
-            errors.push({ message: "Invalid input", field: "canBeDownloaded" });
-        }
-        if (minAgeRestriction !== undefined && typeof minAgeRestriction !== 'number' && minAgeRestriction !== null) {
-            errors.push({ message: "Invalid input", field: "minAgeRestriction" });
-        }
-        if (publicationDate !== undefined && isNaN(Date.parse(publicationDate))) {
-            errors.push({ message: "Invalid input", field: "publicationDate" });
-        }
+        const errors = [];
+        if (!title || typeof title !== "string" || title.length > 40)
+            errors.push({ message: "Invalid title", field: "title" });
+        if (!author || typeof author !== "string" || author.length > 20)
+            errors.push({ message: "Invalid author", field: "author" });
+        if (!isResolutionsValid)
+            errors.push({ message: "Invalid availableResolutions", field: "availableResolutions" });
+        if (typeof canBeDownloaded !== "boolean" && canBeDownloaded !== undefined)
+            errors.push({ message: "Invalid canBeDownloaded", field: "canBeDownloaded" });
+        if (minAgeRestriction !== null && typeof minAgeRestriction !== "number" && minAgeRestriction !== undefined)
+            errors.push({ message: "Invalid minAgeRestriction", field: "minAgeRestriction" });
+        if (publicationDate && isNaN(Date.parse(publicationDate)))
+            errors.push({ message: "Invalid publicationDate", field: "publicationDate" });
 
         if (errors.length > 0) return res.status(400).json({ errorsMessages: errors });
 
-        video.title = title;
-        video.author = author;
-        if (availableResolutions !== undefined) video.availableResolutions = availableResolutions;
-        if (canBeDownloaded !== undefined) video.canBeDownloaded = canBeDownloaded;
-        if (minAgeRestriction !== undefined) video.minAgeRestriction = minAgeRestriction;
-        video.publicationDate = publicationDate || addDays(new Date(video.createdAt), 1).toISOString();
+        Object.assign(video, {
+            title,
+            author,
+            availableResolutions,
+            canBeDownloaded,
+            minAgeRestriction,
+            publicationDate: publicationDate || addDays(new Date(video.createdAt), 1).toISOString()
+        });
 
-        res.sendStatus(204);
+        return res.sendStatus(204);
     });
+
 
     app.delete('/videos/:id' , (req: Request  , res: Response) => {
         const id = Number(req.params.id);
