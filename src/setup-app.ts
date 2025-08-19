@@ -34,9 +34,6 @@ export const setupApp = (app: Express) => {
     app.get('/videos', (req: Request  , res: Response ) => {
         res.sendStatus(200).json(videos)
     })
-    // app.get('/videos', (req: Request  , res: Response ) => {
-    //     res.json(videos)
-    // })
 
     app.post('/videos', (req: Request, res: Response) => {
         const { title, author, availableResolutions } = req.body;
@@ -80,7 +77,7 @@ export const setupApp = (app: Express) => {
         };
 
         videos.push(createVideo);
-        res.status(201).json(createVideo);
+        res.sendStatus(201).json(createVideo);
     });
 
     app.get('/videos/:id' , (req: Request  , res: Response) => {
@@ -102,7 +99,7 @@ export const setupApp = (app: Express) => {
     app.put('/videos/:id', (req: Request, res: Response) => {
         const id = Number(req.params.id);
         const video = videos.find(v => v.id === id);
-        if (!video) return res.sendStatus(404);
+        if (!video) return res.status(404).send();
 
         const {
             title,
@@ -142,7 +139,7 @@ export const setupApp = (app: Express) => {
             publicationDate: publicationDate || addDays(new Date(video.createdAt), 1).toISOString()
         });
 
-        return res.sendStatus(204);
+        return res.status(204).send();
     });
 
 
@@ -150,16 +147,16 @@ export const setupApp = (app: Express) => {
         const id = Number(req.params.id);
         const video = videos.findIndex(v => v.id === id);
         if (video === -1) {
-            return res.sendStatus(404);
+            return res.status(404).send();
         }else {
             videos.splice(video , 1);
-            return  res.sendStatus(204)
+            return  res.status(204).send()
         }
     })
 
     app.delete('/testing/all-data' , (req: Request  , res: Response) => {
         videos = [];
-        res.status(204).send()
+        res.sendStatus(204)
     })
 
     // app.delete('/testing/all-data' , (req: Request  , res: Response) => {
