@@ -27,11 +27,11 @@ export const setupApp = (app: Express) => {
 
     let videos: Video[] = []
 
-    app.get('/hometask_01/api/videos', (req  , res ) => {
+    app.get('/api/videos', (req  , res ) => {
         res.status(200).json(videos)
     })
 
-    app.post('/hometask_01/api/videos',(req, res) => {
+    app.post('/api/videos',(req, res) => {
         const {title , author , availableResolutions} = req.body
         const isValid = Array.isArray(availableResolutions) &&
             availableResolutions.every(r => Object.values(Resolution).includes(r));
@@ -56,7 +56,7 @@ export const setupApp = (app: Express) => {
         res.status(201).json(createVideo)
     })
 
-    app.get('/hometask_01/api/videos/:id' , (req , res) => {
+    app.get('/api/videos/:id' , (req , res) => {
         const id = Number(req.params.id)
         const findVideos = videos.find(value => value.id === id)
         if(findVideos) {
@@ -66,7 +66,7 @@ export const setupApp = (app: Express) => {
         }
     })
 
-    app.put('/hometask_01/api/videos/:id', (req, res) => {
+    app.put('/api/videos/:id', (req, res) => {
         const id = Number(req.params.id);
         const video = videos.find(v => v.id === id);
         if (!video) return res.status(404);
@@ -91,7 +91,7 @@ export const setupApp = (app: Express) => {
         return res.status(204);
     });
 
-    app.delete('/hometask_01/api/videos/:id' , (req ,res) => {
+    app.delete('/api/videos/:id' , (req ,res) => {
         const id = Number(req.params.id);
         const video = videos.findIndex(v => v.id === id);
         if (video === -1) {
@@ -103,7 +103,7 @@ export const setupApp = (app: Express) => {
     })
 
 
-    app.delete('/hometask_01/api/testing/all-data' , (req , res) => {
+    app.delete('api/testing/all-data' , (req , res) => {
         videos = [];
         res.status(204)
     })
