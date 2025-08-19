@@ -34,6 +34,9 @@ export const setupApp = (app: Express) => {
     app.get('/videos', (req: Request  , res: Response ) => {
         res.sendStatus(200).json(videos)
     })
+    // app.get('/videos', (req: Request  , res: Response ) => {
+    //     res.json(videos)
+    // })
 
     app.post('/videos', (req: Request, res: Response) => {
         const { title, author, availableResolutions } = req.body;
@@ -128,7 +131,12 @@ export const setupApp = (app: Express) => {
 
     app.delete('/testing/all-data' , (req: Request  , res: Response) => {
         videos = [];
-        res.sendStatus(204)
+        res.status(204).send()
     })
+
+    // app.delete('/testing/all-data' , (req: Request  , res: Response) => {
+    //     videos = [];
+    //     res.json(videos)
+    // })
     return app;
 };
