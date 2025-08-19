@@ -46,6 +46,7 @@ export const setupApp = (app: Express) => {
                 ]
             })
         }
+        const now = new Date();
         const createVideo = {
             "id": +Date.now(),
             title ,
@@ -53,11 +54,11 @@ export const setupApp = (app: Express) => {
             "canBeDownloaded": false,
             "minAgeRestriction": null,
             "createdAt": new Date().toISOString(),
-            "publicationDate": new Date().toISOString(),
+            "publicationDate": new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
             availableResolutions
         }
         videos.push(createVideo)
-        res.sendStatus(201).json(createVideo)
+        res.status(201).json(createVideo)
     })
 
     app.get('/videos/:id' , (req: Request  , res: Response) => {
