@@ -102,7 +102,6 @@ export const setupApp = (app: Express) => {
         }
     })
 
-
     app.delete('/api/testing/all-data' , (req , res) => {
         videos = [];
         res.status(204)
