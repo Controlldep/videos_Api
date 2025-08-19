@@ -27,6 +27,10 @@ export const setupApp = (app: Express) => {
 
     let videos: Video[] = []
 
+    app.get("/", (req, res) => {
+        res.send("Hello from Render!");
+    });
+
     app.get('/api/videos', (req: Request  , res: Response ) => {
         res.status(200).json(videos)
     })
