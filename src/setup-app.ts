@@ -32,7 +32,7 @@ export const setupApp = (app: Express) => {
     });
 
     app.get('/videos', (req: Request  , res: Response ) => {
-        res.sendStatus(200)
+        res.sendStatus(200).send(videos)
     })
 
     app.post('/videos', (req: Request, res: Response) => {
@@ -63,7 +63,7 @@ export const setupApp = (app: Express) => {
 
 
         const createdAt = new Date().toISOString();
-        const publicationDate = new Date(new Date(createdAt).getTime() + 24 * 60 * 60 * 1000).toISOString();
+        const {publicationDate} = req.body
 
         const createVideo = {
             id: +Date.now(),
@@ -147,10 +147,10 @@ export const setupApp = (app: Express) => {
         const id = Number(req.params.id);
         const video = videos.findIndex(v => v.id === id);
         if (video === -1) {
-            res.status(404).send();
+            res.sendStatus(404);
         }else {
             videos.splice(video , 1);
-            res.status(204).send()
+            res.sendStatus(204)
         }
     })
 
