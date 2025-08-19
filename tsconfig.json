@@ -6,6 +6,7 @@
     "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "lib": ["es2020" , "dom"],
